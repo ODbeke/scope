@@ -6,7 +6,6 @@ import { ShieldCheck, FileSpreadsheet, ListFilter, Plus } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { StatsDashboard } from '@/components/StatsDashboard';
-import { AboutSection } from '@/components/AboutSection';
 import { EvaluationCard } from '@/components/EvaluationCard';
 import { LoadingSkeleton, EmptyState, ErrorState } from '@/components/States';
 import { SubmitModal } from '@/components/SubmitModal';
@@ -67,9 +66,6 @@ function Dashboard() {
           <section>
             <StatsDashboard derived={data.derived} />
           </section>
-
-          {/* About Section */}
-          <AboutSection />
 
           {/* Ledger Section */}
           <section className="space-y-6">
