@@ -139,4 +139,62 @@ class ScopeEvaluator(gl.Contract):
 
         return gl.vm.run_nondet_unsafe(leader_fn, validator_fn)
 
+    # ---- Public State Writes ----
+
+    @gl.public.write
+    def submit_milestone(self, scope_of_work: str, outcome_evidence: str) -> str:
+        """
+        Receives criteria and work evidence, runs AI evaluation, and logs the outcome.
+        """
+        # 1. Deterministic validation guards
+        scope_of_work = scope_of_work.strip()
+        outcome_evidence = outcome_evidence.strip()
+        if not (1 <= len(scope_of_work) <= MAX_CRITERIA_LEN):
+            raise gl.vm.UserError(
+                ERR_INVALID_INPUT + " Scope of work criteria must be 1-" + str(MAX_CRITERIA_LEN) + " characters"
+            )
+        if not (1 <= len(outcome_evidence) <= MAX_EVIDENCE_LEN):
+            raise gl.vm.UserError(
+                ERR_INVALID_INPUT + " Evidence text must be 1-" + str(MAX_EVIDENCE_LEN) + " characters"
+            )
+
+        # 2. Invoke the arbiter under consensus
+        verdict = self._evaluate(scope_of_work, outcome_evidence)
+
+        # 3. Deterministic backstops: Clamp score to its corresponding verdict band
+        decision = verdict["verdict"]
+        score = verdict["score"]
+        if decision == "VERIFIED" and score < 70:
+            score = 70
+        elif decision == "DEFICIENT":
+            score = min(69, max(35, score))
+        elif decision == "DEFAULT" and score > 34:
+            score = 34
+
+        # 4. Update contract state
+        self.seq += u256(1)
+        eval_id = "eval-" + str(int(self.seq))
+        provider_addr = gl.message.sender_address.as_hex
+        
+        record = {
+            "id": eval_id,
+            "scope": scope_of_work,
+            "evidence": outcome_evidence,
+            "provider": provider_addr,
+            "verdict": decision,
+            "score": score,
+            "reasoning": verdict["reasoning"],
+            "index": int(self.seq),
+        }
+        
+        self.evaluations[eval_id] = json.dumps(record)
+        self.evaluation_ids.append(eval_id)
+        self.total_evals += u256(1)
+        
+        if decision == "VERIFIED":
+            self.total_verified += u256(1)
+            
+        return eval_id
+
+
 
