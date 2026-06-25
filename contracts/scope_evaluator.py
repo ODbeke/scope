@@ -196,5 +196,56 @@ class ScopeEvaluator(gl.Contract):
             
         return eval_id
 
+    # ---- Public State Views ----
+
+    @gl.public.view
+    def get_evaluations(self, start: u256) -> list:
+        """
+        Returns a paginated list of evaluation records.
+        """
+        output = []
+        cursor = int(start)
+        count = len(self.evaluation_ids)
+        while cursor < count and len(output) < PAGE_LIMIT:
+            output.append(json.loads(self.evaluations[self.evaluation_ids[cursor]]))
+            cursor += 1
+        return output
+
+    @gl.public.view
+    def get_verified_evaluations(self, start: u256) -> list:
+        """
+        Returns a paginated list of evaluation records that achieved VERIFIED status.
+        """
+        output = []
+        cursor = int(start)
+        count = len(self.evaluation_ids)
+        while cursor < count and len(output) < PAGE_LIMIT:
+            record = json.loads(self.evaluations[self.evaluation_ids[cursor]])
+            if record.get("verdict") == "VERIFIED":
+                output.append(record)
+            cursor += 1
+        return output
+
+    @gl.public.view
+    def get_evaluation(self, eval_id: str) -> dict:
+        """
+        Retrieves a single evaluation record by its unique ID.
+        """
+        if eval_id not in self.evaluations:
+            raise gl.vm.UserError(ERR_INVALID_INPUT + " Specified evaluation record was not found")
+        return json.loads(self.evaluations[eval_id])
+
+    @gl.public.view
+    def get_stats(self) -> dict:
+        """
+        Retrieves contract metadata statistics in a single call.
+        """
+        return {
+            "evals": int(self.total_evals),
+            "verified": int(self.total_verified),
+            "owner": self.owner.as_hex,
+        }
+
+
 
 
