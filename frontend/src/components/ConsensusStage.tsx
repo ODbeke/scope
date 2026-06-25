@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { FileCheck, ShieldAlert, AlertTriangle, Loader2 } from 'lucide-react';
 import type { TxState } from '@/hooks/useTransaction';
 import { verdictColors, verdictText } from '@/lib/format';
@@ -39,16 +38,8 @@ export function ConsensusStage({ tx }: { tx: TxState }) {
     <div className="flex flex-col items-center">
       {/* Animated Circle */}
       <div className="relative flex h-28 w-28 items-center justify-center">
-        <motion.span
-          className="absolute inset-0 rounded-full border border-[#d4af37]/20"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.15, 0.5] }}
-          transition={{ duration: 2.5, repeat: Infinity }}
-        />
-        <motion.span
-          className="absolute inset-3 rounded-full border border-[#d4af37]/45"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-        />
+        <div className="absolute inset-0 rounded-full border border-[#d4af37]/20 animate-pulse" />
+        <div className="absolute inset-3 rounded-full border border-dashed border-[#d4af37]/45 animate-[spin_8s_linear_infinite]" />
         <Loader2 size={32} className="animate-spin text-[#d4af37]" />
       </div>
 
@@ -100,11 +91,7 @@ export function ConsensusStage({ tx }: { tx: TxState }) {
 
       {/* Leader Draft Card */}
       {draft && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 w-full max-w-md rounded-sm border border-dashed border-[#d4af37]/30 bg-[#111726]/60 p-4 text-left"
-        >
+        <div className="mt-6 w-full max-w-md rounded-sm border border-dashed border-[#d4af37]/30 bg-[#111726]/60 p-4 text-left transition-all duration-300">
           <div className="flex items-center justify-between">
             <span className="font-serif text-[10px] font-semibold uppercase tracking-wider text-gray-400">
               Leader Draft Evaluation
@@ -132,7 +119,7 @@ export function ConsensusStage({ tx }: { tx: TxState }) {
           <p className="mt-3 text-[10px] text-gray-600 font-sans">
             * This represents the initial leader assessment. Validators are currently re-executing this audit to reach final consensus.
           </p>
-        </motion.div>
+        </div>
       )}
 
       <p className="mt-6 font-mono text-[10px] text-gray-600">

@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { X, CheckCircle, AlertTriangle, Info } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
 
 export type ToastType = 'success' | 'error' | 'info';
 
@@ -37,38 +36,33 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
-        <AnimatePresence>
-          {toasts.map((t) => {
-            const Icon = t.type === 'success' ? CheckCircle : t.type === 'error' ? AlertTriangle : Info;
-            const bgClass =
-              t.type === 'success'
-                ? 'bg-[#111726] border-[#10b981]/30 text-[#10b981]'
-                : t.type === 'error'
-                ? 'bg-[#111726] border-[#f43f5e]/30 text-[#f43f5e]'
-                : 'bg-[#111726] border-[#d4af37]/30 text-[#d4af37]';
+        {toasts.map((t) => {
+          const Icon = t.type === 'success' ? CheckCircle : t.type === 'error' ? AlertTriangle : Info;
+          const bgClass =
+            t.type === 'success'
+              ? 'bg-[#111726] border-[#10b981]/30 text-[#10b981]'
+              : t.type === 'error'
+              ? 'bg-[#111726] border-[#f43f5e]/30 text-[#f43f5e]'
+              : 'bg-[#111726] border-[#d4af37]/30 text-[#d4af37]';
 
-            return (
-              <motion.div
-                key={t.id}
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                className={`pointer-events-auto flex items-center justify-between rounded-sm border p-4 shadow-glass ${bgClass}`}
+          return (
+            <div
+              key={t.id}
+              className={`pointer-events-auto flex items-center justify-between rounded-sm border p-4 shadow-glass transition-all duration-300 ${bgClass}`}
+            >
+              <div className="flex items-center gap-3">
+                <Icon size={16} className="shrink-0" />
+                <p className="text-xs font-semibold text-white leading-relaxed">{t.message}</p>
+              </div>
+              <button
+                onClick={() => removeToast(t.id)}
+                className="ml-4 text-gray-500 hover:text-white transition-colors cursor-pointer"
               >
-                <div className="flex items-center gap-3">
-                  <Icon size={16} className="shrink-0" />
-                  <p className="text-xs font-semibold text-white leading-relaxed">{t.message}</p>
-                </div>
-                <button
-                  onClick={() => removeToast(t.id)}
-                  className="ml-4 text-gray-500 hover:text-white transition-colors cursor-pointer"
-                >
-                  <X size={14} />
-                </button>
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
+                <X size={14} />
+              </button>
+            </div>
+          );
+        })}
       </div>
     </ToastContext.Provider>
   );

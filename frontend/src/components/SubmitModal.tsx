@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { X, ShieldAlert, Award, ArrowUpRight, Wallet, Check } from 'lucide-react';
+import { X, ShieldAlert, ArrowUpRight, Wallet, Check } from 'lucide-react';
 import type { useTransaction } from '@/hooks/useTransaction';
 import { ConsensusStage } from './ConsensusStage';
 import { EvaluationCard } from './EvaluationCard';
@@ -88,99 +87,91 @@ export function SubmitModal({
   const isBusy = state.phase === 'wallet' || state.phase === 'submitted' || state.phase === 'consensus';
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
-        onClick={handleClose}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+      onClick={handleClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative flex h-full w-full max-w-2xl flex-col overflow-y-auto border border-white/10 bg-[#0b0f19] shadow-glass sm:h-auto sm:max-h-[90vh] rounded-sm transition-transform duration-300"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 15, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 15 }}
-          transition={{ duration: 0.2 }}
-          onClick={(e) => e.stopPropagation()}
-          className="relative flex h-full w-full max-w-2xl flex-col overflow-y-auto border border-white/10 bg-[#0b0f19] shadow-glass sm:h-auto sm:max-h-[90vh] rounded-sm"
-        >
-          {/* Header */}
-          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/5 bg-[#0b0f19] px-6 py-4">
-            <span className="font-serif text-lg font-bold tracking-wider text-white">
-              EVALUATION INTAKE
-            </span>
-            {!isBusy && (
-              <button
-                onClick={handleClose}
-                className="text-gray-500 hover:text-white transition-colors cursor-pointer"
-              >
-                <X size={18} />
-              </button>
-            )}
-          </div>
+        {/* Header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/5 bg-[#0b0f19] px-6 py-4">
+          <span className="font-serif text-lg font-bold tracking-wider text-white">
+            EVALUATION INTAKE
+          </span>
+          {!isBusy && (
+            <button
+              onClick={handleClose}
+              className="text-gray-500 hover:text-white transition-colors cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+          )}
+        </div>
 
-          {/* Scrollable Container */}
-          <div className="p-6">
-            {/* INPUT FORM */}
-            {state.phase === 'idle' && !confirming && (
-              <div className="space-y-6">
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  Submit a structured milestones outcome request. Provide the clear scope of work criteria agreed upon, followed by the verifiable evidence of completion. The AI arbiter consensus will resolve completion status.
-                </p>
+        {/* Scrollable Container */}
+        <div className="p-6">
+          {/* INPUT FORM */}
+          {state.phase === 'idle' && !confirming && (
+            <div className="space-y-6">
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Submit a structured milestones outcome request. Provide the clear scope of work criteria agreed upon, followed by the verifiable evidence of completion. The AI arbiter consensus will resolve completion status.
+              </p>
 
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#d4af37]">
-                    Scope of Work (Criteria)
-                  </label>
-                  <textarea
-                    ref={sowRef}
-                    value={sow}
-                    onChange={(e) => setSow(e.target.value.slice(0, MAX_SOW + 20))}
-                    rows={4}
-                    placeholder="Specify what milestones, features, or deliverables were required..."
-                    className="mt-2 w-full rounded-sm border border-white/10 bg-[#111726]/60 px-4 py-3 text-sm text-white placeholder:text-gray-600 focus-ring resize-none font-sans"
-                  />
-                  <div className="mt-1 flex justify-between font-mono text-[10px] text-gray-500">
-                    <span className="text-[#f43f5e]">{sow.length > 0 ? sowError : ''}</span>
-                    <span className={sow.length > MAX_SOW ? 'text-[#f43f5e]' : ''}>
-                      {sow.length}/{MAX_SOW}
-                    </span>
-                  </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#d4af37]">
+                  Scope of Work (Criteria)
+                </label>
+                <textarea
+                  ref={sowRef}
+                  value={sow}
+                  onChange={(e) => setSow(e.target.value.slice(0, MAX_SOW + 20))}
+                  rows={4}
+                  placeholder="Specify what milestones, features, or deliverables were required..."
+                  className="mt-2 w-full rounded-sm border border-white/10 bg-[#111726]/60 px-4 py-3 text-sm text-white placeholder:text-gray-600 focus-ring resize-none font-sans"
+                />
+                <div className="mt-1 flex justify-between font-mono text-[10px] text-gray-500">
+                  <span className="text-[#f43f5e]">{sow.length > 0 ? sowError : ''}</span>
+                  <span className={sow.length > MAX_SOW ? 'text-[#f43f5e]' : ''}>
+                    {sow.length}/{MAX_SOW}
+                  </span>
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#d4af37]">
-                    Outcome Evidence
-                  </label>
-                  <textarea
-                    value={evidence}
-                    onChange={(e) => setEvidence(e.target.value.slice(0, MAX_EVIDENCE + 40))}
-                    rows={6}
-                    placeholder="Detail the completions, links, or reports showing these criteria have been successfully resolved..."
-                    className="mt-2 w-full rounded-sm border border-white/10 bg-[#111726]/60 px-4 py-3 text-sm text-white placeholder:text-gray-600 focus-ring resize-none font-sans"
-                  />
-                  <div className="mt-1 flex justify-between font-mono text-[10px] text-gray-500">
-                    <span className="text-[#f43f5e]">{evidence.length > 0 ? evidenceError : ''}</span>
-                    <span className={evidence.length > MAX_EVIDENCE ? 'text-[#f43f5e]' : ''}>
-                      {evidence.length}/{MAX_EVIDENCE}
-                    </span>
-                  </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#d4af37]">
+                  Outcome Evidence
+                </label>
+                <textarea
+                  value={evidence}
+                  onChange={(e) => setEvidence(e.target.value.slice(0, MAX_EVIDENCE + 40))}
+                  rows={6}
+                  placeholder="Detail the completions, links, or reports showing these criteria have been successfully resolved..."
+                  className="mt-2 w-full rounded-sm border border-white/10 bg-[#111726]/60 px-4 py-3 text-sm text-white placeholder:text-gray-600 focus-ring resize-none font-sans"
+                />
+                <div className="mt-1 flex justify-between font-mono text-[10px] text-gray-500">
+                  <span className="text-[#f43f5e]">{evidence.length > 0 ? evidenceError : ''}</span>
+                  <span className={evidence.length > MAX_EVIDENCE ? 'text-[#f43f5e]' : ''}>
+                    {evidence.length}/{MAX_EVIDENCE}
+                  </span>
                 </div>
+              </div>
 
-                {!address ? (
-                  <button
-                    onClick={onConnect}
-                    className="flex w-full items-center justify-center gap-2 rounded-sm border border-white/15 bg-white/5 py-3 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/10 transition-colors focus-ring cursor-pointer"
-                  >
-                    <Wallet size={14} /> Connect Wallet to Evaluate
-                  </button>
-                ) : (
-                  <button
-                    disabled={!isValid}
-                    onClick={handleInitiate}
-                    className="flex w-full items-center justify-center gap-2 rounded-sm bg-[#d4af37] py-3 text-xs font-bold uppercase tracking-wider text-[#090d16] hover:bg-[#e5c158] transition-colors focus-ring disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                  >
-                    Submit Milestone Audit
+              {!address ? (
+                <button
+                  onClick={onConnect}
+                  className="flex w-full items-center justify-center gap-2 rounded-sm border border-white/15 bg-white/5 py-3 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/10 transition-colors focus-ring cursor-pointer"
+                >
+                  <Wallet size={14} /> Connect Wallet to Evaluate
+                </button>
+              ) : (
+                <button
+                  disabled={!isValid}
+                  onClick={handleInitiate}
+                  className="flex w-full items-center justify-center gap-2 rounded-sm bg-[#d4af37] py-3 text-xs font-bold uppercase tracking-wider text-[#090d16] hover:bg-[#e5c158] transition-colors focus-ring disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  Submit Milestone Audit
                   </button>
                 )}
                 {!chainOk && address && (
@@ -309,8 +300,7 @@ export function SubmitModal({
               </div>
             )}
           </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        </div>
+      </div>
   );
 }

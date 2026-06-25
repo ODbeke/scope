@@ -133,6 +133,6 @@ export async function submitMilestone(
     address: CONTRACT_ADDRESS,
     functionName: 'submit_milestone',
     args: [scope, evidence],
-    value: 0n,
+    value: BigInt(0),
   }) as Promise<`0x${string}`>;
 }
