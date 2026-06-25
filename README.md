@@ -9,7 +9,6 @@ SCOPE replaces centralized escrow agents and subjective human disputes with an o
 
 ---
 
-## About the Protocol
 
 Traditional freelance agreements and B2B service contracts rely on centralized dispute managers who are slow, expensive, and often struggle to understand technical deliverables. **SCOPE** changes this by introducing automated, objective, and decentralized milestone verification.
 
