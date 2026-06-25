@@ -1,0 +1,132 @@
+# SCOPE: Smart Contract Outcome & Performance Evaluator
+
+An on-chain verification engine for service agreements, freelance milestones, and B2B deliverables. 
+
+SCOPE replaces centralized escrow agents and subjective human disputes with an objective, consensus-backed AI arbiter run by GenLayer validators. Clients and providers submit a Scope of Work (SOW) agreement and the finished outcome evidence. The network audits the deliverables against the criteria and records an immutable, verified completion grade.
+
+- **Vault Dashboard:** [Deploys on localhost:3000]
+- **Bradbury Contract:** `0x7cAD049401B4574A21c1D8AF95a4808b1100328D` (configured dynamically via `deployment.json`)
+
+---
+
+## Technical Architecture
+
+Centralized escrow systems and milestone platforms are prone to single-party censorship, rating inflation, or biased disputes. SCOPE guarantees that project evaluations are subjective yet reproducible:
+
+```
+[ Client & Provider ]
+        |
+        v
+[ Submit Milestone ] ---> ( Validation Input Guards )
+                                  |
+                                  v
+                       [ GenLayer Consensus ]
+                                  |
+                     +------------+------------+
+                     |                         |
+            [ Leader Draft ]         [ Validator Audits ]
+            (Model Exec Prompt)      (Independent Verification)
+                     |                         |
+                     +------------+------------+
+                                  |
+                                  v
+                      ( Check Equivalence Rule )
+                      - Strict Verdict Agreement
+                      - 12% Score Drift Tolerance
+                                  |
+                                  v
+                       ( Clamp Score Backstops )
+                       - VERIFIED: 70-100
+                       - DEFICIENT: 35-69
+                       - DEFAULT: 0-34
+                                  |
+                                  v
+                        [ Immutable Ledger ]
+```
+
+### 1. Verification Timeline
+1. **Intake & Guards:** The contract validates string lengths (`MAX_CRITERIA_LEN` = 500, `MAX_EVIDENCE_LEN` = 1000) deterministically to prevent gas manipulation.
+2. **Leader Appraisal:** The block leader executes the LLM arbiter prompt, assessing the evidence against the scope of work. It returns a verdict, rating score, and professional reasoning sentence.
+3. **Equivalence Auditing:** Independent validators run the same evaluation. The equivalence logic requires that they agree exactly on the categorical verdict (`VERIFIED`, `DEFICIENT`, or `DEFAULT`), allowing a rating variance of up to 12 points or 12% drift to tolerate non-deterministic LLM variance.
+4. **Deterministic Clamping:** The contract applies strict score boundary clamp backstops. A `VERIFIED` milestone can never settle below a score of 70, preventing model glitches from recording corrupt data.
+5. **State Storage:** The audited milestone is serialized as JSON and pushed to a `TreeMap` storage layout for paginated frontend fetching.
+
+---
+
+## Project Structure
+
+```
+SCOPE/
+├── contracts/
+│   └── scope_evaluator.py     # Intelligent Contract with validator checks
+├── tests/
+│   └── integration/
+│       └── test_scope.py      # Integration tests running LLM/VM checks
+├── scripts/
+│   ├── deploy.py              # Deploy contract and write deployment.json
+│   ├── gl.py                  # Read/write ABI encoding helpers
+│   ├── verify_read.py         # Verify read methods on the deployed address
+│   └── verify_write.py        # Execute AI write validation on Bradbury
+├── frontend/
+│   ├── src/
+│   │   ├── app/               # Next.js App Router (Layout & Dashboard)
+│   │   ├── components/        # Header, Stats, Cards, Modal, Consensus Timeline
+│   │   ├── hooks/             # useWallet, useContractData, useTransaction hooks
+│   │   └── lib/               # genlayer-js connection and formatting libraries
+│   ├── tailwind.config.ts     # Executive slate/gold theme parameters
+│   └── package.json           # Frontend dependency manifest
+├── deployment.json            # Deployment receipt logs (reads automatically)
+└── gltest.config.yaml         # Python testing configurations
+```
+
+---
+
+## Getting Started
+
+### 1. Contract Setup & Testing
+Ensure you have the GenVM testing suite and development dependencies installed:
+
+```bash
+# Install genlayer dev tools
+pip install genvm-linter genlayer-test
+
+# Lint the contract
+genvm-lint check contracts/scope_evaluator.py
+
+# Run integration tests locally
+gltest tests/integration/ -v -s --network studionet
+```
+
+### 2. Deployment
+Setup your private key inside a `.env` file in the root directory:
+
+```env
+GENLAYER_PRIVATE_KEY=your_private_key_here
+```
+
+Execute the deployment script:
+```bash
+# Deploy to Bradbury Testnet
+python scripts/deploy.py
+
+# Verify contract read methods
+python scripts/verify_read.py
+
+# Verify AI audit write flow
+python scripts/verify_write.py
+```
+
+### 3. Frontend Execution
+The Next.js web application automatically reads the contract address and transaction hash outputted inside `deployment.json`. No copy-pasting is required.
+
+```bash
+cd frontend
+
+# Install package dependencies
+npm install --legacy-peer-deps
+
+# Run the local development server
+npm run dev
+```
+
+Navigate to `http://localhost:3000` to interact with the executive audit dashboard.
