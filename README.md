@@ -9,6 +9,17 @@ SCOPE replaces centralized escrow agents and subjective human disputes with an o
 
 ---
 
+## About the Protocol
+
+Traditional freelance agreements and B2B service contracts rely on centralized dispute managers who are slow, expensive, and often struggle to understand technical deliverables. **SCOPE** changes this by introducing automated, objective, and decentralized milestone verification.
+
+### How GenLayer Empowers SCOPE
+* **Consensus-Backed AI Judgment:** Instead of relying on a single model or server (which could be biased or hacked), SCOPE runs subjective appraisals under GenLayer validator consensus. Multiple independent validators verify the outcome before sealing the verdict.
+* **Equivalence Rules:** Tolerance rules absorb natural LLM variations (up to 12% drift in scores), ensuring that minor model deviations do not block consensus.
+* **Deterministic Backstops:** Hard clamps prevent model glitches from storing invalid outcome scores, enforcing rating bands for verified deliverables.
+
+---
+
 ## Technical Architecture
 
 Centralized escrow systems and milestone platforms are prone to single-party censorship, rating inflation, or biased disputes. SCOPE guarantees that project evaluations are subjective yet reproducible:
