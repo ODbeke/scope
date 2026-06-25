@@ -73,8 +73,16 @@ def _handle_leader_exceptions(leader_result, run_leader) -> bool:
 
 
 class ScopeEvaluator(gl.Contract):
-    """
-    SCOPE: Smart Contract Outcome & Performance Evaluator.
-    Evaluates milestone completion based on scope of work and outcomes.
-    """
-    pass
+    owner: Address
+    evaluations: TreeMap[str, str]      # eval_id -> serialized evaluation record (JSON string)
+    evaluation_ids: DynArray[str]        # list of eval_ids in chronological order
+    total_evals: u256
+    total_verified: u256
+    seq: u256
+
+    def __init__(self):
+        self.owner = gl.message.sender_address
+        self.total_evals = u256(0)
+        self.total_verified = u256(0)
+        self.seq = u256(0)
+
