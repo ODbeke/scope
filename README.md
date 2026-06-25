@@ -4,8 +4,8 @@ An on-chain verification engine for service agreements, freelance milestones, an
 
 SCOPE replaces centralized escrow agents and subjective human disputes with an objective, consensus-backed AI arbiter run by GenLayer validators. Clients and providers submit a Scope of Work (SOW) agreement and the finished outcome evidence. The network audits the deliverables against the criteria and records an immutable, verified completion grade.
 
-- **Vault Dashboard:** [Deploys on localhost:3000]
-- **Bradbury Contract:** `0x7cAD049401B4574A21c1D8AF95a4808b1100328D` (configured dynamically via `deployment.json`)
+- **Vault Dashboard:** [scope-omega.vercel.app](https://scope-omega.vercel.app/)
+- **Bradbury Contract:** `0x1e76778777e5e0E7afcc8d43fFfEC76117DE4575` (configured dynamically via `deployment.json`)
 
 ---
 
@@ -130,3 +130,39 @@ npm run dev
 ```
 
 Navigate to `http://localhost:3000` to interact with the executive audit dashboard.
+
+---
+
+## Examples for Testing
+
+Use the following real-world milestone scenarios to test the validation states on your local server or Vercel live application:
+
+### Example 1: Resolving a VERIFIED Verdict
+* **Scope of Work (Criteria):**
+  ```text
+  Create a responsive contact form in React with fields for Name, Email (validated), and Message. The form must mock submit data to an API endpoint and display a visual confirmation toast upon successful completion.
+  ```
+* **Outcome Evidence:**
+  ```text
+  Delivered the React contact form. Designed responsive flex layouts, added a regex check on the Email input field, and integrated a form submit handler that queries a mock API endpoint, successfully displaying a 'Message Sent' toast notification.
+  ```
+
+### Example 2: Resolving a DEFICIENT Verdict
+* **Scope of Work (Criteria):**
+  ```text
+  Build a user settings page featuring an avatar upload input, text fields for display name and bio, and a functional 'Save Changes' button that persists configuration data to the database.
+  ```
+* **Outcome Evidence:**
+  ```text
+  Designed the settings page UI. Display name and bio fields are fully styled with a 'Save Changes' action button. However, the avatar upload component is currently static (does not accept files), and database persistence API calls have not yet been integrated.
+  ```
+
+### Example 3: Resolving a DEFAULT Verdict
+* **Scope of Work (Criteria):**
+  ```text
+  Set up a Redis caching layer for active user sessions to reduce overall database query latency below 50ms.
+  ```
+* **Outcome Evidence:**
+  ```text
+  Created a simple Python script that connects to a local SQLite database and prints the user counts. We did not have time to install Redis or configure session caching variables during this sprint.
+  ```

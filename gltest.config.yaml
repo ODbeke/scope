@@ -1,2 +1,3 @@
-selected_network: studionet
-contracts_dir: contracts
+paths:
+  contracts: contracts/
+  artifacts: artifacts/
