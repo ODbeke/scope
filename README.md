@@ -1,11 +1,11 @@
-# SCOPE: Smart Contract Outcome & Performance Evaluator
+# SCOPE
 
-An on-chain verification engine for service agreements, freelance milestones, and B2B deliverables. 
+An onchain verification engine for service agreements, freelance milestones, and B2B deliverables. 
 
 SCOPE replaces centralized escrow agents and subjective human disputes with an objective, consensus-backed AI arbiter run by GenLayer validators. Clients and providers submit a Scope of Work (SOW) agreement and the finished outcome evidence. The network audits the deliverables against the criteria and records an immutable, verified completion grade.
 
-- **Vault Dashboard:** [scope-omega.vercel.app](https://scope-omega.vercel.app/)
-- **Bradbury Contract:** `0x1e76778777e5e0E7afcc8d43fFfEC76117DE4575` (configured dynamically via `deployment.json`)
+- **Live Deployment:** [scope-omega.vercel.app](https://scope-omega.vercel.app/)
+- **Bradbury Contract:** `0x1e76778777e5e0E7afcc8d43fFfEC76117DE4575`
 
 ---
 
